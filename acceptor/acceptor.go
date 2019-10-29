@@ -96,9 +96,6 @@ func (acceptor *Acceptor) Prepare(pEpoch uint64) (bool, Proposal) {
 		return false, Proposal{}
 	}
 
-	if pEpoch <= acceptor.latestEpoch {
-		return false, Proposal{}
-	}
 	if err := truncateAndWrite(acceptor.epochFile, fmt.Sprintf("%d", pEpoch)); err != nil {
 		fmt.Println(fmt.Sprintf("truncateAndWrite file failed: error[%v]", err))
 		return false, Proposal{}
@@ -119,9 +116,6 @@ func (acceptor *Acceptor) Accept(proposal Proposal) bool {
 		return false
 	}
 
-	if proposal.Epoch != acceptor.latestEpoch {
-		return false
-	}
 	pStr, err := json.Marshal(proposal)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("invalid proposal, json marshal fialed: error[%v]", err))
